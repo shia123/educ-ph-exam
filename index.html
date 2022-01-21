@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="landing-page">
+
+        <div class="card student-list">
+            <div class="card-header header-record">
+                <h6> Student List</h6>
+                <button type="button " class="btn btn-primary " id="addStudent" data-toggle="modal"
+                    data-target="#exampleModal">
+                    Add Student
+                </button>
+                <button type="button " class="btn btn-primary " id="clearStudent">
+                    Clear Record
+                </button>
+                <button type="button " class="btn btn-primary " id="classAverage">
+                    Class Average
+                </button>
+
+
+            </div>
+            <div class="card-body">
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Student Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Student Name</label>
+                                        <input type="text" class="form-control" id="studentName"
+                                            placeholder="Enter Student Name" required>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Grade</label>
+                                        <input type="number" class="form-control" id="grade" placeholder="Enter Grade">
+                                    </div>
+                                    <button type="button" id="submitHandler" class="btn btn-primary"
+                                        data-dismiss="modal">Submit</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <table class="table" id="studentList">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Student Number</th>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Grade</th>
+                            <!-- <th scope="col">Action</th> -->
+                        </tr>
+                    </thead>
+                    <tbody id="studentValues">
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <script>
+        var selectedRow = null;
+        var formData = {};
+        var totalAverage = []
+        // var id = []
+        $(document).ready(function () {
+
+            $("#addStudent").click(function () {
+                resetForm();
+
+            });
+
+            $("#clearStudent").click(function () {
+                clearData();
+
+            });
+
+            $("#classAverage").click(function () {
+                if (totalAverage.length !== 0) {
+
+                    var totalAvg = sumAvg(totalAverage) / totalAverage.length;
+                    alert("Class Average:" + totalAvg)
+
+                }
+                else {
+                    alert("No Record For Class Average")
+                }
+
+            });
+
+            $("#submitHandler").click(function () {
+
+                var formData = readFormData();
+                if (selectedRow == null) insertNewRecord(formData), totalAverage.push(formData.grade), id.push(formData.snumber);
+                else updateRecord(formData);
+
+
+
+            });
+
+
+
+
+        })
+
+        function sumAvg(ar) {
+            var sum = 0;
+            for (var i = 0; i < ar.length; i++) {
+                sum += parseInt(ar[i], 10);
+            }
+            return sum;
+        }
+        function readFormData() {
+
+            formData["snumber"] = "TLN" + (Math.random() + 1).toString(36).substring(7);
+            formData["sname"] = $("#studentName").val();
+            formData["grade"] = $("#grade").val();
+            return formData;
+        }
+
+        function insertNewRecord(data) {
+            var table = document
+                .getElementById("studentList")
+                .getElementsByTagName("tbody")[0];
+            var newRow = table.insertRow(table.length);
+            cell1 = newRow.insertCell(0);
+            cell1.innerHTML = data.snumber;
+            cell2 = newRow.insertCell(1);
+            cell2.innerHTML = data.sname;
+            cell3 = newRow.insertCell(2);
+            cell3.innerHTML = data.grade;
+            cell4 = newRow.insertCell(3);
+            // cell4.innerHTML = `<a onClick="onEdit(this)" class="btn btn-primary" data-toggle="modal"
+            //         data-target="#exampleModal">Edit</a>
+            //            <a onClick="onDelete(this)" class="btn btn-danger">Delete</a>`;
+        }
+
+        function clearData() {
+            formData = {}
+            totalAverage = []
+            $("#studentValues").empty();
+            return formData
+
+        }
+        function resetForm() {
+            document.getElementById("studentName").value = "";
+            document.getElementById("grade").value = "";
+            selectedRow = null;
+        }
+
+        function onEdit(td) {
+
+            selectedRow = td.parentElement.parentElement;
+            document.getElementById("studentName").value = selectedRow.cells[1].innerHTML;
+            document.getElementById("grade").value = selectedRow.cells[2].innerHTML;
+
+
+        }
+        function updateRecord(formData) {
+            selectedRow.cells[1].innerHTML = formData.sname;
+            selectedRow.cells[2].innerHTML = formData.grade;
+            // var index = id.findIndex(function (o) {
+            //     return o === selectedRow.cells[0].innerHTML;
+
+
+            // })
+
+            // if (index !== -1) id.splice(index, 1), totalAverage.push(selectedRow.cells[2].innerHTML), totalAverage.splice(index, 1);
+        }
+        function onDelete(td) {
+            console.log("test")
+            if (confirm("Are you sure to delete this record ?")) {
+                row = td.parentElement.parentElement;
+                document.getElementById("studentList").deleteRow(row.rowIndex);
+                resetForm();
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
